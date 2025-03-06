@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'job.apps.JobConfig',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'django_celery_beat',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -59,6 +63,9 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
     ]
 }
 
@@ -146,3 +153,5 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
