@@ -41,3 +41,18 @@ class Job(models.Model):
     def __str__(self):
         return self.title
 
+class JobApplication(models.Model):
+    job = models.ForeignKey(
+        Job,
+        on_delete=models.CASCADE,
+        related_name='applications'
+    )
+    applicant = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="applications"
+    )
+    application_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=16, default='pending', choices=(('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')))
+    cover_letter = models.TextField()
+    resume = models.FileField(upload_to='resumes/')
