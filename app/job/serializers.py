@@ -54,4 +54,16 @@ class JobApplicationSerializer(serializers.ModelSerializer):
             'status': {'read_only': True},
             'application_date': {'read_only': True}
         }
+
+class JobApplicationStatusSerializer(serializers.ModelSerializer):
+    STATUS_CHOICES =(
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    )
+
+    status = serializers.ChoiceField(choices=STATUS_CHOICES)
+    class Meta:
+        model = JobApplication
+        fields = ['status']
     

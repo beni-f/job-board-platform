@@ -2,12 +2,12 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate
 
 from .models import Job, CustomUser, JobApplication
-from .serializers import JobSerializer, CustomUserSerializer, JobApplicationSerializer
+from .serializers import JobSerializer, CustomUserSerializer, JobApplicationSerializer, JobApplicationStatusSerializer
 from .permissions import IsEmployer, IsNotAuthenticated, IsApplicant, IsApplicantOrEmployer
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status, serializers
@@ -100,27 +100,19 @@ class UserLoginView(APIView):
             })
         return Response({"error": F"Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
     
-class UpdateApplicationStatusView(APIView):
+class UpdateApplicationStatusView(UpdateAPIView):
+    serializer_class = JobApplicationStatusSerializer
     permission_classes = [IsEmployer]
 
-    def patch(self, request, job_id, application_id):
-        try:
-            job = Job.objects.get(id=job_id)
-            job_application = JobApplication.objects.get(id=application_id, job=job)
+    def get_object(self):
+        job_id = self.kwargs.get('job_id')
+        application_id = self.kwargs.get('application_id')
 
-            if job.recruiter != request.user:
-                raise PermissionDenied("You are not authorized to update this application status")
-            
-            status_data = request.data.get('status')
-            if not status_data:
-                return Response({"detail": "Status field is required"})
-            
-            job_application.status = status_data
-            job_application.save()
+        return get_object_or_404(JobApplication, id=application_id, job__id=job_id)
 
-            serializer = JobApplicationSerializer(job_application)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Job.DoesNotExist:
-            return Response({"detail": "Job not found."}, status=status.HTTP_400_BAD_REQUEST)
-        except JobApplication:
-            return Response({"detail": "Job application not found."}, status=status.HTTP_400_BAD_REQUEST)
+    def perform_update(self, serializer):
+        user = self.request.user
+        if user.role != 'employer':
+            raise serializers.ValidationError("Only employers can update the status.")
+        
+        serializer.save()
