@@ -1,12 +1,20 @@
 from rest_framework.permissions import BasePermission
+from .models import JobApplication, Job
 
 class IsEmployerOrAdmin(BasePermission):
     def has_permission(self, request, view):
         return request.user.role == 'employer' or request.user.is_staff
     
 class IsEmployer(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.role == 'employer'
     def has_object_permission(self, request, view, obj):
-        return request.user == obj.recruiter
+        if isinstance(obj, JobApplication):
+            job = obj.job
+            return job.recruiter == request.user
+        if isinstance(obj, Job):
+            return obj.recruiter == request.user
+        return False
     
 class IsNotAuthenticated(BasePermission):
     def has_permission(self, request, view):
@@ -23,10 +31,3 @@ class IsApplicantOrEmployer(BasePermission):
         return request.user.is_authenticated
     def has_object_permission(self, request, view, obj):
         return request.user == obj.applicant or request.user == obj.job.recruiter
-    
-class IsEmployerOfJob(BasePermission):
-    def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role == 'employer'
-    
-    def has_object_permission(self, request, view, obj):
-        return request.user == obj.job.recruiter

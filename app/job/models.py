@@ -55,4 +55,4 @@ class JobApplication(models.Model):
     application_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=16, default='pending', choices=(('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')))
     cover_letter = models.TextField()
-    resume = models.FileField(upload_to='resumes/')
+    resume = models.FileField(upload_to='resumes/', null=True, blank=True)

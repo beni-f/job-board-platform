@@ -54,3 +54,4 @@ class JobApplicationSerializer(serializers.ModelSerializer):
             'status': {'read_only': True},
             'application_date': {'read_only': True}
         }
+    
