@@ -17,7 +17,61 @@ A full-featured job board platform built with Django REST Framework (DRF) and Re
 ## Backend Setup
 1. **Clone the repository:**
     ```sh
-        git clone https://github.com/beni-f/job-board-platform.git
-        cd job-board-platform
+    git clone https://github.com/beni-f/job-board-platform.git
+    cd job-board-platform
+    ```
+2. **Create a virtual environment and activate it**
+    ```sh
+    python -m venv venv
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    ```
+3. **Install dependencies:**
+    ```sh
+    pip install -r requirements.txt
+    ```
+4. **Set up environment variables:** Create a .env file in the ./app directory and add
+    ```sh
+    DB_NAME= 'job_board_db'
+    DB_USER = 'job_board_user'
+    DB_PASSWORD = '1aDamdemyso'
+    DB_HOST = 'localhost'
+    DB_PORT = '5432'
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = 'benifissha@gmail.com'
+    EMAIL_HOST_PASSWORD = 'ljmp nxbn thkn izzx'
+    DEFAULT_FROM_EMAIL = 'benifissha@gmail.com'
+    ```
+5. **Apply migrations and create a superuser**
+    ```sh
+    python3 manage.py migrate
+    python3 manage.py createsuperuser
+    ```
+6. **Run the server**:
+    ```sh
+    python3 manage.py runserver
     ```
 
+## API Endpoints
+### Authentication
+- `POST /api/auth/login/` - User login
+- `POST /api/auth/register/` - User registration
+- `POST /api/auth/logout/` - Logout
+
+### Jobs
+- `GET /api/jobs/` - List all jobs
+- `POST /api/jobs/create` - Create a new job (Recruiter only)
+- `GET /api/jobs/{id}/` - Retrieve a job
+- `PUT /api/jobs/{id}/` - Update a job (Recruiter of the job only)
+- `DELETE /api/jobs/{id}/` - Delete a job (Recruiter of the job only)
+
+### Applications
+- `GET /api/jobs/{job_id}/applications` - List applications for a specific job (Recruiter of the job only)
+- `POST /api/jobs/{job_id}/applications/apply` - Apply for a job (Job seeker only)
+- `GET /api/jobs/{job_id}/applications/{application_id}` - Retrieve the job application (Recruiter of the job and the applier only)
+- `PUT /api/jobs/{job_id}/applications/{application_id}/update-status` - Update application status (Recruiter of the job only)
+- `PUT /api/jobs/{job_id}/applications/{application_id}` - Update application (Job applier only)
+
+## License
+This project is licensed under the MIT license.
