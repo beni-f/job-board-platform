@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'django_celery_beat',
     'django_filters',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -66,7 +67,8 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
-    ]
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 ROOT_URLCONF = 'app.urls'
@@ -155,3 +157,18 @@ SIMPLE_JWT = {
 }
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'benifissha@gmail.com'
+EMAIL_HOST_PASSWORD = 'ljmp nxbn thkn izzx'
+DEFAULT_FROM_EMAIL = 'benifissha@gmail.com'
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Job Board Platform API',
+    'DESCRIPTION': 'API for Job Board Platform',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}

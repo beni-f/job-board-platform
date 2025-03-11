@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate
 from .models import Job, CustomUser, JobApplication
 from .serializers import JobSerializer, CustomUserSerializer, JobApplicationSerializer, JobApplicationStatusSerializer
 from .permissions import IsEmployer, IsNotAuthenticated, IsApplicant, IsApplicantOrEmployer
+from .utils import send_application_status_email
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
@@ -14,7 +15,7 @@ from rest_framework import status, serializers
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView 
 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -86,19 +87,8 @@ class UserRegistrationView(CreateAPIView):
     serializer_class = CustomUserSerializer
     permission_classes = [IsNotAuthenticated]
 
-class UserLoginView(APIView):
-    def post(self, request):
-        email = request.data.get("email")
-        password = request.data.get("password")
-
-        user = authenticate(email=email, password=password)
-        if user is not None:
-            refresh = RefreshToken.for_user(user)
-            return Response({
-                "access": str(refresh.access_token),
-                "refresh": str(refresh)
-            })
-        return Response({"error": F"Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+class UserLoginView(TokenObtainPairView):
+    pass
     
 class UpdateApplicationStatusView(UpdateAPIView):
     serializer_class = JobApplicationStatusSerializer
@@ -112,7 +102,13 @@ class UpdateApplicationStatusView(UpdateAPIView):
 
     def perform_update(self, serializer):
         user = self.request.user
+        application = self.get_object()
         if user.role != 'employer':
             raise serializers.ValidationError("Only employers can update the status.")
         
+        prev_status = application.status
         serializer.save()
+        new_status = serializer.instance.status
+
+        if new_status in ["accepted", "rejected"] and new_status != prev_status:
+            send_application_status_email(application.applicant.email, application.job.title, new_status)
