@@ -31,17 +31,17 @@ A full-featured job board platform built with Django REST Framework (DRF) and Re
     ```
 4. **Set up environment variables:** Create a .env file in the ./app directory and add
     ```sh
-    DB_NAME= 'job_board_db'
-    DB_USER = 'job_board_user'
-    DB_PASSWORD = '1aDamdemyso'
+    DB_NAME= 'your_db_name'
+    DB_USER = 'your_db_user'
+    DB_PASSWORD = 'your_db_password'
     DB_HOST = 'localhost'
     DB_PORT = '5432'
     EMAIL_HOST = 'smtp.gmail.com'
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
-    EMAIL_HOST_USER = 'benifissha@gmail.com'
-    EMAIL_HOST_PASSWORD = 'ljmp nxbn thkn izzx'
-    DEFAULT_FROM_EMAIL = 'benifissha@gmail.com'
+    EMAIL_HOST_USER = 'your_email@example.com'
+    EMAIL_HOST_PASSWORD = 'your_email_password'
+    DEFAULT_FROM_EMAIL = 'your_email@example.com'
     ```
 5. **Apply migrations and create a superuser**
     ```sh
