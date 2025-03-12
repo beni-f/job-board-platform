@@ -98,12 +98,8 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 DATABASES['default'] = dj_database_url.parse("postgresql://job_board_db_8tor_user:iqkuXNaMg9gOtDOF06CRl703uCYW0QOP@dpg-cv8t34in91rc73aibe2g-a.oregon-postgres.render.com/job_board_db_8tor")
