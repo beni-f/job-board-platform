@@ -8,7 +8,7 @@ class JobSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Job
-        fields = ['title', 'recruiter', 'description', 'location', 'category', 'salary',  'custom_category', 'date_posted', 'job_deadline']
+        fields = ['id', 'title', 'recruiter', 'description', 'location', 'category', 'salary',  'custom_category', 'date_posted', 'job_deadline']
         extra_kwargs = {
             'recruiter': {'read_only': True},
             'date_posted': {'read_only': True}
@@ -48,7 +48,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class JobApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobApplication
-        fields = ['job', 'applicant', 'application_date', 'status', 'cover_letter', 'resume']
+        fields = ['id', 'job', 'applicant', 'application_date', 'status', 'cover_letter', 'resume']
         extra_kwargs = {
             'applicant': {'read_only': True},
             'status': {'read_only': True},
