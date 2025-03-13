@@ -10,13 +10,12 @@ class JobSerializer(serializers.ModelSerializer):
         model = Job
         fields = ['id', 'title', 'recruiter', 'description', 'location', 'category', 'salary',  'custom_category', 'date_posted', 'job_deadline']
         extra_kwargs = {
-            'id': {'read_only': True},
             'recruiter': {'read_only': True},
             'date_posted': {'read_only': True}
         }
     
     def validate(self, data):
-        custom_category = data.get('custom_category')
+        custom_category = data.pop('custom_category', None)
         if custom_category:
             category, created = Category.objects.get_or_create(name=custom_category)
             data['category'] = category
@@ -51,7 +50,6 @@ class JobApplicationSerializer(serializers.ModelSerializer):
         model = JobApplication
         fields = ['id', 'job', 'applicant', 'application_date', 'status', 'cover_letter', 'resume']
         extra_kwargs = {
-            'id': {'read_only': True},
             'applicant': {'read_only': True},
             'status': {'read_only': True},
             'application_date': {'read_only': True}
